@@ -1,0 +1,12 @@
+/dataset/
+/validate/
+/wandb/
+/venv/
+/checkpoints/
+/.idea/
+
+/logs/*
+!/logs/.gitkeep
+
+/results/*
+!/results/.gitkeep
