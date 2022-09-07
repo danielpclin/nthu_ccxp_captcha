@@ -4,6 +4,8 @@
 /venv/
 /checkpoints/
 /.idea/
+/tfjs/
+/test/
 
 /logs/*
 !/logs/.gitkeep

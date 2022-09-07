@@ -7,14 +7,14 @@ import pandas as pd
 import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
-from keras import backend as K
-from keras.preprocessing.image import ImageDataGenerator
-from keras import Input, Model
-from keras.callbacks import TensorBoard, EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
-from keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPooling2D, BatchNormalization, Activation, Add
-from keras.optimizers import Adam, SGD
-from keras import mixed_precision
-from keras.utils import to_categorical
+from tensorflow.keras import backend as K
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras import Input, Model
+from tensorflow.keras.callbacks import TensorBoard, EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
+from tensorflow.keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPooling2D, BatchNormalization, Activation, Add
+from tensorflow.keras.optimizers import Adam, SGD
+from tensorflow.keras import mixed_precision
+from tensorflow.keras.utils import to_categorical
 from wandb.integration.keras import WandbCallback
 
 # Setup mixed precision
@@ -250,10 +250,10 @@ def train(version_num, batch_size=64):
     checkpoint = ModelCheckpoint(checkpoint_path, monitor='val_loss', verbose=1, save_best_only=True,
                                  save_weights_only=False, mode='auto')
 
-    early_stop = MinimumEpochEarlyStopping(monitor='val_loss', patience=10, verbose=1, mode='auto', min_epoch=20)
+    early_stop = MinimumEpochEarlyStopping(monitor='val_loss', patience=8, verbose=1, mode='auto', min_epoch=15)
     tensor_board = TensorBoard(log_dir=log_dir, histogram_freq=1)
-    reduce_lr = MinimumEpochReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=5, cooldown=1, mode='auto',
-                                              min_lr=0.00001, min_epoch=20)
+    reduce_lr = MinimumEpochReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=4, cooldown=1, mode='auto',
+                                              min_lr=0.00001, min_epoch=15)
     wandb_callback = WandbCallback()
     callbacks_list = [tensor_board, early_stop, checkpoint, reduce_lr, wandb_callback]
     # callbacks_list = [tensor_board, early_stop, reduce_lr, wandb_callback]
