@@ -137,7 +137,7 @@ def plot(history, version_num):
     plt.yscale("log")
     plt.grid()
     plt.tight_layout()
-    plt.savefig(f"results/train_{version_num}.png")
+    plt.savefig(f"results/oauth/train_{version_num}.png")
     plt.close(fig)
 
     fig = plt.figure(figsize=(20, 15))
@@ -166,7 +166,7 @@ def plot(history, version_num):
     plt.yscale("log")
     plt.grid()
     plt.tight_layout()
-    plt.savefig(f"results/val_{version_num}.png")
+    plt.savefig(f"results/oauth/val_{version_num}.png")
     plt.close(fig)
 
 
@@ -177,43 +177,41 @@ def get_dataset_dataframe(folder):
     frames = []
     d: str
     for d in os.listdir(dataset_path):
-        temp = pd.DataFrame({'file': (dataset_path / d).glob('*.png')})
-        for i in range(6):
-            temp[f'label_{i+1}'] = d[i]
-            temp[f'label_{i+1}'] = temp[f'label_{i+1}'].apply(lambda el: to_categorical(char_to_int[el], len(alphabet)))
-        temp['label'] = d
-        temp['file'] = temp['file'].astype('str')
-        frames.append(temp)
+        frame = pd.DataFrame({'file': (dataset_path / d).glob('*.png')})
+        for i in range(4):
+            frame[f'label_{i+1}'] = d[i]
+            frame[f'label_{i+1}'] = frame[f'label_{i+1}'].apply(lambda el: to_categorical(char_to_int[el], len(alphabet)))
+        frame['label'] = d
+        frame['file'] = frame['file'].astype('str')
+        frames.append(frame)
     return pd.concat(frames, ignore_index=True)
 
 
-def train(version_num, batch_size=64):
-    training_dataset_dir = f"dataset"
-    validate_dataset_dir = f"validate"
-    checkpoint_path = f'checkpoints/{version_num}.hdf5'
-    log_dir = f'logs/{version_num}'
+def train(version_num, img_size=(80, 30), train_dir="dataset/ccxp/dataset", val_dir="dataset/ccxp/validate", batch_size=256):
+    checkpoint_path = f'checkpoints/oauth/{version_num}.hdf5'
+    log_dir = f'logs/oauth/{version_num}'
     epochs = 100
     learning_rate = 0.0001
     optimizer = Adam(learning_rate)
-    run = wandb.init(project="nthu_ccxp_captcha", entity="danielpclin", reinit=True, config={
+    img_width, img_height = img_size
+    run = wandb.init(project="nthu_ccxp_oauth_captcha", entity="danielpclin", reinit=True, config={
         "learning_rate": learning_rate,
         "epochs": epochs,
         "batch_size": batch_size,
         "version": version_num,
-        "optimizer": optimizer._name
+        "img_width": img_width,
+        "img_height": img_height,
     })
-    img_width = 80
-    img_height = 30
-    train_df = get_dataset_dataframe(training_dataset_dir)
-    validate_df = get_dataset_dataframe(validate_dataset_dir)
+    train_df = get_dataset_dataframe(train_dir)
+    validate_df = get_dataset_dataframe(val_dir)
     train_data_gen = ImageDataGenerator(rescale=1. / 255)
     validate_data_gen = ImageDataGenerator(rescale=1. / 255)
     train_generator = train_data_gen.flow_from_dataframe(dataframe=train_df, directory='.', x_col="file",
-                                                         y_col=[f'label_{i}' for i in range(1, 7)],
+                                                         y_col=[f'label_{i}' for i in range(1, 5)],
                                                          class_mode="multi_output", target_size=(img_height, img_width),
                                                          batch_size=batch_size)
     validation_generator = validate_data_gen.flow_from_dataframe(dataframe=validate_df, directory='.', x_col="file",
-                                                                 y_col=[f'label_{i}' for i in range(1, 7)],
+                                                                 y_col=[f'label_{i}' for i in range(1, 5)],
                                                                  class_mode="multi_output",
                                                                  target_size=(img_height, img_width),
                                                                  batch_size=batch_size)
@@ -244,7 +242,7 @@ def train(version_num, batch_size=64):
     x = BatchNormalization()(x)
     x = Flatten()(x)
     x = Dropout(0.3)(x)
-    out = [Dense(len(alphabet), name=f'label_{i}', activation='softmax')(x) for i in range(1, 7)]
+    out = [Dense(len(alphabet), name=f'label_{i}', activation='softmax')(x) for i in range(1, 5)]
     model = Model(main_input, out)
     model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
     checkpoint = ModelCheckpoint(checkpoint_path, monitor='val_loss', verbose=1, save_best_only=True,
@@ -256,7 +254,6 @@ def train(version_num, batch_size=64):
                                               min_lr=0.00001, min_epoch=15)
     wandb_callback = WandbCallback()
     callbacks_list = [tensor_board, early_stop, checkpoint, reduce_lr, wandb_callback]
-    # callbacks_list = [tensor_board, early_stop, reduce_lr, wandb_callback]
 
     model.summary()
     train_history = model.fit(
@@ -268,17 +265,9 @@ def train(version_num, batch_size=64):
         verbose=1,
         callbacks=callbacks_list
     )
-    with open(f"results/{version_num}.pickle", "wb") as file:
+    os.makedirs(pathlib.Path("results/oauth"), exist_ok=True)
+    with open(f"results/oauth/{version_num}.pickle", "wb") as file:
         pickle.dump(train_history.history, file)
-    # with open(f"results/{version_num}.txt", "w") as file:
-    #     loss_idx = np.nanargmin(train_history.history['val_loss'])
-    #     file.write("Loss:\n")
-    #     file.write(f"{train_history.history['val_loss'][loss_idx]}\n")
-    #     acc = 1
-    #     file.write("Accuracy:\n")
-    #     for letter_idx in range(1, 13):
-    #         acc *= train_history.history[f"val_label{letter_idx}_accuracy"][loss_idx]
-    #     file.write(f"{acc}\n")
 
     plot(train_history.history, version_num)
 
@@ -287,14 +276,24 @@ def train(version_num, batch_size=64):
 
 
 def main():
-    with open('current_version.txt', 'r+') as f:
+    with open('ccxp_oauth_version.txt', 'r+') as f:
         version_num = int(f.read())
         version_num += 1
         f.seek(0)
         f.write(str(version_num))
         f.truncate()
-    train(version_num=version_num, batch_size=256)
+    train(version_num=version_num, img_size=(150, 80), train_dir="dataset/oauth/dataset", val_dir="dataset/oauth/validate")
+
+
+def main_halved():
+    with open('ccxp_oauth_version.txt', 'r+') as f:
+        version_num = int(f.read())
+        version_num += 1
+        f.seek(0)
+        f.write(str(version_num))
+        f.truncate()
+    train(version_num=version_num, img_size=(75, 40), train_dir="dataset/oauth/dataset", val_dir="dataset/oauth/validate")
 
 
 if __name__ == "__main__":
-    main()
+    main_halved()

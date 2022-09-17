@@ -18,9 +18,11 @@ def check_directory(directory):
 
 
 def main():
-    # check_directory('dataset')
-    # check_directory('validate')
-    check_directory('test')
+    check_directory('dataset/ccxp/dataset')
+    check_directory('dataset/ccxp/validate')
+    check_directory('dataset/oauth/dataset')
+    check_directory('dataset/oauth/validate')
+    pass
 
 
 if __name__ == "__main__":
