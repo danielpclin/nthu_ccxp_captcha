@@ -1,13 +1,13 @@
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
-
 import tensorflow as tf
 import numpy as np
 from PIL import Image
 from tensorflow.keras import models, mixed_precision
 
 from skimage import transform
+
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 
 def load(filename):

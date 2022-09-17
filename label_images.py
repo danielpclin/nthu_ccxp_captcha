@@ -20,7 +20,7 @@ def label_ccxp(total=198):
                 im = Image.open(BytesIO(r.content))
                 plt.imshow(im)
                 plt.show()
-                code = input(f"Enter code ({i}/{total}): ")
+                code = input(f"Enter code ({i+1}/{total}): ")
                 result.append((pass_str, code))
     except KeyboardInterrupt:
         pass
@@ -42,7 +42,7 @@ def label_ccxp_oauth(total=50):
                 im = Image.open(BytesIO(r.content))
                 plt.imshow(im)
                 plt.show()
-                code = input(f"Enter code ({i}/{total}): ")
+                code = input(f"Enter code ({i+1}/{total}): ")
                 result.append((id_str, code))
     except KeyboardInterrupt:
         pass
