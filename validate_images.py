@@ -1,11 +1,13 @@
 import pathlib
+
+import tqdm
 from PIL import Image
 import shutil
 
 
 def check_directory(directory):
     bad_dirs = set()
-    for filename in pathlib.Path(directory).glob('*/*.png'):
+    for filename in tqdm.tqdm(pathlib.Path(directory).glob('*/*.png')):
         try:
             img = Image.open(filename)
             img.verify()

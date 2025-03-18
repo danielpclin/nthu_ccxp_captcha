@@ -8,6 +8,7 @@ Run `validate_images.py` to validate downloaded images
 
 Run `train.py` to train the model
 
+Run `predict.py` to see the prediction result
 
 
 Run to convert into tensorflow.js format

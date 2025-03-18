@@ -82,7 +82,7 @@ def plot(history, version_num):
     plt.close(fig)
 
 
-def train(version_num, img_size=(104, 32), train_dir="dataset/ccxp/dataset", val_dir="dataset/ccxp/validate", batch_size=250):
+def train(version_num, img_size=(104, 32), train_dir="dataset/ccxp/dataset", val_dir="dataset/ccxp/validate", batch_size=512):
     checkpoint_path = f'checkpoints/ccxp/{version_num}.hdf5'
     log_dir = f'logs/ccxp/{version_num}'
     epochs = 100
@@ -145,7 +145,7 @@ def train(version_num, img_size=(104, 32), train_dir="dataset/ccxp/dataset", val
 
     early_stop = MinimumEpochEarlyStopping(monitor='val_loss', patience=8, verbose=1, mode='auto', min_epoch=15)
     tensor_board = TensorBoard(log_dir=log_dir, histogram_freq=1)
-    reduce_lr = MinimumEpochReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=4, cooldown=1, mode='auto',
+    reduce_lr = MinimumEpochReduceLROnPlateau(monitor='val_loss', factor=0.8, patience=4, cooldown=1, mode='auto',
                                               min_lr=0.00001, min_epoch=15)
     wandb_callback = WandbCallback()
     callbacks_list = [tensor_board, early_stop, checkpoint, reduce_lr, wandb_callback]
