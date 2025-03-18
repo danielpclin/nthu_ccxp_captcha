@@ -11,8 +11,8 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 
 def load(filename):
-    img_width = 80
-    img_height = 30
+    img_width = 104
+    img_height = 32
     np_image = Image.open(filename).convert('RGB')
     np_image = np.array(np_image).astype('float32')/255
     np_image = transform.resize(np_image, (img_height, img_width, 3))

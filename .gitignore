@@ -10,3 +10,5 @@
 
 /results/*
 !/results/.gitkeep
+
+/predict_*.csv

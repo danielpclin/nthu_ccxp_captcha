@@ -20,8 +20,8 @@ def check_directory(directory):
 def main():
     check_directory('dataset/ccxp/dataset')
     check_directory('dataset/ccxp/validate')
-    check_directory('dataset/oauth/dataset')
-    check_directory('dataset/oauth/validate')
+    # check_directory('dataset/oauth/dataset')
+    # check_directory('dataset/oauth/validate')
     pass
 
 

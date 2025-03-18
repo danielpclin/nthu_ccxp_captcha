@@ -4,9 +4,10 @@ Run `label_images.py` to label images and generate a list of codes
 
 Run `generate_images.py` to generate dataset
 
+Run `validate_images.py` to validate downloaded images
+
 Run `train.py` to train the model
 
-Run `validate_images.py` to validate downloaded images
 
 
 Run to convert into tensorflow.js format

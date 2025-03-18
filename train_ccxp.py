@@ -82,7 +82,7 @@ def plot(history, version_num):
     plt.close(fig)
 
 
-def train(version_num, img_size=(80, 30), train_dir="dataset/ccxp/dataset", val_dir="dataset/ccxp/validate", batch_size=250):
+def train(version_num, img_size=(104, 32), train_dir="dataset/ccxp/dataset", val_dir="dataset/ccxp/validate", batch_size=250):
     checkpoint_path = f'checkpoints/ccxp/{version_num}.hdf5'
     log_dir = f'logs/ccxp/{version_num}'
     epochs = 100

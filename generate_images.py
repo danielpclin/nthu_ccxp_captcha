@@ -56,10 +56,10 @@ def get_ccxp_oauth_images(password_codes, directory='dataset'):
 
 
 def main():
-    # get_ccxp_images(ccxp_codes, 'dataset/ccxp/dataset')
-    # get_ccxp_images(ccxp_validate_codes, 'dataset/ccxp/validate')
-    get_ccxp_oauth_images(ccxp_oauth_codes, 'dataset/oauth/dataset')
-    get_ccxp_oauth_images(ccxp_oauth_validate_codes, 'dataset/oauth/validate')
+    get_ccxp_images(ccxp_codes, 'dataset/ccxp/dataset')
+    get_ccxp_images(ccxp_validate_codes, 'dataset/ccxp/validate')
+    # get_ccxp_oauth_images(ccxp_oauth_codes, 'dataset/oauth/dataset')
+    # get_ccxp_oauth_images(ccxp_oauth_validate_codes, 'dataset/oauth/validate')
 
 
 if __name__ == "__main__":

@@ -191,4 +191,4 @@ def main_halved():
 
 if __name__ == "__main__":
     main()
-    main_halved()
+    # main_halved()

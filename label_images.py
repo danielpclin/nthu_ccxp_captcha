@@ -51,8 +51,8 @@ def label_ccxp_oauth(total=50):
 
 
 def main():
-    # label_ccxp()
-    label_ccxp_oauth()
+    label_ccxp()
+    # label_ccxp_oauth()
 
 
 if __name__ == "__main__":
